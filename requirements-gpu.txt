@@ -1,0 +1,8 @@
+--extra-index-url https://download.pytorch.org/whl/cu128
+-r requirements-base.txt
+torch==2.7.1+cu128
+torchvision==0.22.1+cu128
+kagglehub>=0.3.12,<1
+pytest>=8,<9
+ruff>=0.12,<1
+ipykernel>=6,<7

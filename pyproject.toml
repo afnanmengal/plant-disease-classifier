@@ -1,0 +1,20 @@
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = ["-ra", "--import-mode=importlib"]
+
+[tool.pyright]
+pythonVersion = "3.11"
+extraPaths = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.ruff.lint.per-file-ignores]
+"app.py" = ["E402", "I001"]
+"scripts/train.py" = ["E402"]
+"notebooks/*.ipynb" = ["E402", "I001"]
