@@ -50,7 +50,7 @@ colab_api_token = "your-private-token"
 
 When both secrets are set, the app offers **Colab GPU** as its default inference route. The Colab notebook must remain connected; its URL changes when the runtime restarts, so update `colab_api_url` after reconnecting. Without Colab secrets, the app uses its local NVIDIA GPU when available, otherwise CPU.
 
-For Streamlit Community Cloud, deploy `app.py` from this repository. It installs the CPU-compatible `requirements.txt`; do not point it at `requirements-gpu.txt` because hosted Streamlit runtimes do not provide a CUDA GPU.
+For Streamlit Community Cloud, deploy `app.py` from this repository and select Python 3.11. It installs the CPU-compatible `requirements.txt`; do not point it at `requirements-gpu.txt` because hosted Streamlit runtimes do not provide a CUDA GPU.
 
 ## Run the App and Checks
 
