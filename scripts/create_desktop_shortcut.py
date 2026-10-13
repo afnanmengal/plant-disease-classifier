@@ -83,8 +83,8 @@ def generate_icon(icon_path: Path):
 
 def create_shortcut(icon_path: Path):
     project_root = Path(__file__).resolve().parent.parent
-    exe_path = project_root / "desktop_app" / "run" / "run.exe"
-    working_dir = exe_path.parent
+    bat_path = project_root / "Launch_App.bat"
+    working_dir = project_root
 
     # Get User Desktop
     desktop_dir = Path(os.environ["USERPROFILE"]) / "Desktop"
@@ -93,10 +93,11 @@ def create_shortcut(icon_path: Path):
     ps_script = f"""
     $WshShell = New-Object -ComObject WScript.Shell
     $Shortcut = $WshShell.CreateShortcut("{shortcut_path}")
-    $Shortcut.TargetPath = "{exe_path}"
+    $Shortcut.TargetPath = "{bat_path}"
     $Shortcut.WorkingDirectory = "{working_dir}"
     $Shortcut.IconLocation = "{icon_path}"
     $Shortcut.Description = "Plant Disease Classifier - AI Screening App"
+    $Shortcut.WindowStyle = 1
     $Shortcut.Save()
     """
 

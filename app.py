@@ -185,6 +185,8 @@ st.caption("Plant disease recognition | 15-class field image model")
 st.divider()
 
 checkpoint_default = PROJECT_ROOT / "models" / "plant_disease_resnet18.pt"
+if not checkpoint_default.is_file() and (PROJECT_ROOT.parent / "models" / "plant_disease_resnet18.pt").is_file():
+    checkpoint_default = PROJECT_ROOT.parent / "models" / "plant_disease_resnet18.pt"
 checkpoint_path = Path(st.sidebar.text_input("Model checkpoint", str(checkpoint_default)))
 
 colab_setting_url = get_setting("colab_api_url", "PLANT_DISEASE_COLAB_API_URL")
