@@ -184,9 +184,37 @@ st.title("Leaf health scan")
 st.caption("Plant disease recognition | 15-class field image model")
 st.divider()
 
+MODEL_RELEASE_URL = (
+    "https://github.com/afnanmengal/plant-disease-classifier/releases/download/v1.0.0/plant_disease_resnet18.pt"
+)
+
+
+def ensure_checkpoint(target_path: Path) -> Path:
+    """Download the trained checkpoint from GitHub Releases if missing."""
+    if target_path.is_file():
+        return target_path
+    alt = PROJECT_ROOT.parent / "models" / target_path.name
+    if alt.is_file():
+        return alt
+    try:
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        with st.spinner("Downloading trained model checkpoint (44 MB)..."):
+            response = requests.get(MODEL_RELEASE_URL, stream=True, timeout=120)
+            response.raise_for_status()
+            with open(target_path, "wb") as f:
+                for chunk in response.iter_content(chunk_size=1024 * 1024):
+                    if chunk:
+                        f.write(chunk)
+    except Exception as e:
+        st.sidebar.warning(f"Could not download model automatically: {e}")
+    return target_path
+
+
 checkpoint_default = PROJECT_ROOT / "models" / "plant_disease_resnet18.pt"
 if not checkpoint_default.is_file() and (PROJECT_ROOT.parent / "models" / "plant_disease_resnet18.pt").is_file():
     checkpoint_default = PROJECT_ROOT.parent / "models" / "plant_disease_resnet18.pt"
+elif not checkpoint_default.is_file():
+    checkpoint_default = ensure_checkpoint(checkpoint_default)
 checkpoint_path = Path(st.sidebar.text_input("Model checkpoint", str(checkpoint_default)))
 
 colab_setting_url = get_setting("colab_api_url", "PLANT_DISEASE_COLAB_API_URL")
@@ -262,12 +290,10 @@ with image_column:
 with result_column:
     st.subheader("Classification")
     if not checkpoint_path.is_file() and selected_device != "Colab GPU":
-        st.warning("Model checkpoint not found. Train the classifier to enable scans.")
-        st.code(
-            "python scripts/train.py --device cuda `\n"
-            "  --data-dir \"PATH_FROM_DOWNLOAD_OUTPUT\"",
-            language="powershell",
-        )
+        st.warning("Model checkpoint not found.")
+        if st.button("📥 Download Model Checkpoint (44 MB)", type="primary", use_container_width=True):
+            ensure_checkpoint(checkpoint_path)
+            st.rerun()
     elif not image_bytes:
         st.info("Your results will appear here after you add an image.")
     elif image_preview is None:
