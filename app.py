@@ -169,7 +169,7 @@ def get_cached_model(checkpoint: str, modified_ns: int, device: str):
 def get_setting(secret_name: str, environment_name: str) -> str:
     try:
         secret_value = st.secrets.get(secret_name, "")
-    except (FileNotFoundError, RuntimeError):
+    except Exception:
         secret_value = ""
     return str(secret_value or os.environ.get(environment_name, "")).strip()
 
