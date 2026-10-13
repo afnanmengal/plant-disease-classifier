@@ -37,20 +37,31 @@ Training downloads pretrained ResNet18 weights on its first run, then saves the 
 
 Useful options include `--epochs`, `--batch-size`, `--learning-rate`, `--image-size`, `--num-workers`, `--output`, and `--device cuda|cpu`.
 
-## Google Colab GPU
+## Google Colab GPU & Shareable Streamlit App
 
-Open `notebooks/02_colab_gpu.ipynb` in Google Colab and select a GPU runtime. Run the notebook to clone this public repository, download PlantVillage, train with Colab's GPU, and copy the checkpoint to Google Drive. Colab's existing PyTorch installation is reused.
+Open [`notebooks/02_colab_gpu.ipynb`](file:///notebooks/02_colab_gpu.ipynb) in Google Colab and select a GPU runtime (**Runtime > Change runtime type > T4 GPU**).
 
-The notebook can also start an authenticated FastAPI inference service and a temporary Cloudflare tunnel. In Colab's Secrets panel, create `PLANT_DISEASE_API_KEY`. In Streamlit Community Cloud, add the tunnel URL printed by the notebook and the same private token under **App settings > Secrets**:
+You have two ways to use Colab GPU:
+
+### Option 1: Run Streamlit Directly in Colab (Instant Shareable Link)
+1. Run cells 1 through 4 to clone the repository and prepare the model checkpoint (it reuses an existing checkpoint or trains one on Colab's T4 GPU).
+2. Run **Option 1 (Cell 6)** in the notebook.
+3. Colab starts `streamlit run app.py` on the GPU and launches a free Cloudflare tunnel.
+4. Click the printed public URL (e.g., `https://xxxx.trycloudflare.com`) to access and share the live app with anyone in the world.
+
+### Option 2: Remote Colab GPU with Local VS Code or Streamlit Cloud
+1. In Colab's Secrets panel (key icon), create `PLANT_DISEASE_API_KEY`.
+2. Run **Option 2 (Cells 7 & 8)** to start the authenticated FastAPI inference service and Cloudflare tunnel.
+3. In your local VS Code Streamlit app:
+   - Run `streamlit run app.py` locally.
+   - In the sidebar under **Colab GPU Endpoint Settings**, paste the tunnel URL and API token.
+   - The app will route leaf predictions to Google Colab's GPU over HTTP.
+4. Alternatively, deploy to **Streamlit Community Cloud** with `requirements.txt` and store the tunnel URL and token in **App settings > Secrets**:
 
 ```toml
 colab_api_url = "https://your-temporary-tunnel.trycloudflare.com"
 colab_api_token = "your-private-token"
 ```
-
-When both secrets are set, the app offers **Colab GPU** as its default inference route. The Colab notebook must remain connected; its URL changes when the runtime restarts, so update `colab_api_url` after reconnecting. Without Colab secrets, the app uses its local NVIDIA GPU when available, otherwise CPU.
-
-For Streamlit Community Cloud, deploy `app.py` from this repository and select Python 3.11. It installs the CPU-compatible `requirements.txt`; do not point it at `requirements-gpu.txt` because hosted Streamlit runtimes do not provide a CUDA GPU.
 
 ## Run the App and Checks
 

@@ -186,8 +186,25 @@ st.divider()
 
 checkpoint_default = PROJECT_ROOT / "models" / "plant_disease_resnet18.pt"
 checkpoint_path = Path(st.sidebar.text_input("Model checkpoint", str(checkpoint_default)))
-colab_api_url = get_setting("colab_api_url", "PLANT_DISEASE_COLAB_API_URL")
-colab_api_token = get_setting("colab_api_token", "PLANT_DISEASE_COLAB_API_TOKEN")
+
+colab_setting_url = get_setting("colab_api_url", "PLANT_DISEASE_COLAB_API_URL")
+colab_setting_token = get_setting("colab_api_token", "PLANT_DISEASE_COLAB_API_TOKEN")
+
+with st.sidebar.expander("Colab GPU Endpoint Settings", expanded=bool(colab_setting_url)):
+    colab_api_url = st.text_input(
+        "Colab API URL",
+        value=colab_setting_url,
+        placeholder="https://...trycloudflare.com",
+        help="Temporary tunnel URL from Google Colab",
+    ).strip()
+    colab_api_token = st.text_input(
+        "Colab API Token",
+        value=colab_setting_token,
+        type="password",
+        placeholder="Secret API key",
+        help="Private token matching PLANT_DISEASE_API_KEY in Colab",
+    ).strip()
+
 colab_configured = bool(colab_api_url and colab_api_token)
 st.sidebar.subheader("Inference device")
 cuda_available = torch.cuda.is_available()
